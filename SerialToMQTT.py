@@ -15,22 +15,22 @@ port = 1883
 
 try:
     while not os.path.exists(serialport):
-        print("Serial Port %s is not found. Next attempt in 5 sec." % serialport)
+        print "Serial Port %s is not found. Next attempt in 5 sec." % serialport
         time.sleep(5)
 except (KeyboardInterrupt):
-    print ("Interrupt received")
+    print "Interrupt received"
     exit(0)
 
 try:
-    print ("Connecting to Serial... ", serialport)
+    print "Connecting to Serial... ", serialport
     ser = serial.Serial(serialport, 115200, timeout=60)
     time.sleep(2)   # Wait while Arduino is not ready
 except:
-    print ("Failed open Serial Port")
+    print "Failed open Serial Port"
     raise SystemExit
 
 def cleanup():
-    print ("Ending and cleaning up")
+    print "Ending and cleaning up"
     mqttc.loop_stop()
     mqttc.disconnect()
     ser.close()
@@ -38,9 +38,9 @@ def cleanup():
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         paho.Client.connected_flag = True #set flag
-        print("Connected to MQTT")
+        print "Connected to MQTT"
     else:
-        print("Connection Failed with Code=", rc)
+        print "Connection Failed with Code=", rc
 
 def on_message(client, userdata, message):
     mess = message.topic + " " + message.payload.decode("utf-8")
@@ -60,15 +60,15 @@ try:
     
     paho.Client.connected_flag=False
     
-    print("Connecting to MQTT", broker, end='', flush=True)
+    print "Connecting to MQTT", broker,
     #connect to broker
     mqttc.loop_start()
     mqttc.connect(broker, 1883, 60)
     while not paho.Client.connected_flag: #wait in loop
-        print(".", end='', flush=True)
+        print ".",
         time.sleep(1)
 
-    print("Get Topics to subscribe")
+    print "Get Topics to subscribe"
     ser.write(b'get_topics\n')
     ser.flush()
     time.sleep(1)   # Wait while Arduino is not ready
@@ -77,7 +77,7 @@ try:
         line = ser.readline().rstrip().decode("utf-8")
         if line == "end":
             break
-        print("Topic to Subscribe", line)
+        print "Topic to Subscribe", line
         mqttc.subscribe(line)
 
     #read data from serial and publish
@@ -89,12 +89,12 @@ try:
 
 # handle list index error (i.e. assume no data received)
 except (IndexError):
-    print ("No data received within serial timeout period")
+    print "No data received within serial timeout period"
     cleanup()
 # handle app closure
 except (KeyboardInterrupt):
-    print ("Interrupt received")
+    print "Interrupt received"
     cleanup()
 except (RuntimeError):
-    print ("uh-oh! time to die")
+    print "uh-oh! time to die"
     cleanup()
