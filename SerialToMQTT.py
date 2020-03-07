@@ -68,7 +68,7 @@ try:
         print ".",
         time.sleep(1)
 
-    print "Get Topics to subscribe"
+    print "Get Topics to Publish"
     ser.write(b'get_topics\n')
     ser.flush()
     time.sleep(1)   # Wait while Arduino is not ready
@@ -77,7 +77,7 @@ try:
         line = ser.readline().rstrip().decode("utf-8")
         if line == "end":
             break
-        print "Topic to Subscribe", line
+        print "Topic to Publish", line
         mqttc.subscribe(line)
 
     #read data from serial and publish
