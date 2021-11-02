@@ -72,13 +72,18 @@ try:
     ser.write(b'get_topics\n')
     ser.flush()
     time.sleep(1)   # Wait while Arduino is not ready
-
+    
+    topics_started = False
     while True:
         line = ser.readline().rstrip().decode("utf-8")
         if line == "end":
             break
-        print "Topic to Publish", line
-        mqttc.subscribe(line)
+        if line == "start":
+            topics_started = True
+            continue
+        if topics_started:            
+            print "Topic to Publish", line
+            mqttc.subscribe(line)
 
     #read data from serial and publish
     while True:
