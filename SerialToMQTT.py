@@ -53,7 +53,7 @@ try:
     mypid = os.getpid()
     client_uniq = "ArduinoNano-"+str(mypid)
     mqttc = paho.Client(client_uniq)
-    mqttc.username_pw_set("mqttusr", "mq123tt")
+    mqttc.username_pw_set("login_name", "password") #login to mqttbroker
 
     mqttc.on_connect = on_connect
     mqttc.on_message = on_message
